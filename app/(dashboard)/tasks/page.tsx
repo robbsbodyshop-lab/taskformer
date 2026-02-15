@@ -6,10 +6,8 @@ import { Plus, SlidersHorizontal } from 'lucide-react'
 import { TaskCard } from '@/components/tasks/task-card'
 import { TaskForm } from '@/components/tasks/task-form'
 import { TaskFilters, TaskFilterState } from '@/components/tasks/task-filters'
-import { getTasks } from '@/lib/queries/tasks'
-import { getCategories } from '@/lib/queries/categories'
-import { TaskWithCategory } from '@/lib/queries/tasks'
-import { Category } from '@prisma/client'
+import type { TaskWithCategory } from '@/lib/queries/tasks'
+import type { Category } from '@prisma/client'
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState<TaskWithCategory[]>([])
@@ -20,12 +18,39 @@ export default function TasksPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [showFilters, setShowFilters] = useState(false)
 
+  const fetchJson = async <T,>(url: string, fallback: T): Promise<T> => {
+    try {
+      const response = await fetch(url, { cache: 'no-store' })
+      if (!response.ok) return fallback
+      return (await response.json()) as T
+    } catch {
+      return fallback
+    }
+  }
+
   const loadData = useCallback(async () => {
     setIsLoading(true)
     try {
+      const params = new URLSearchParams()
+      if (filters.completed !== undefined) {
+        params.set('completed', String(filters.completed))
+      }
+      if (filters.priority) {
+        params.set('priority', filters.priority)
+      }
+      if (filters.categoryId) {
+        params.set('categoryId', filters.categoryId)
+      }
+      if (filters.search) {
+        params.set('search', filters.search)
+      }
+
+      const query = params.toString()
+      const tasksUrl = query ? `/api/tasks?${query}` : '/api/tasks'
+
       const [tasksData, categoriesData] = await Promise.all([
-        getTasks(filters),
-        getCategories(),
+        fetchJson<TaskWithCategory[]>(tasksUrl, []),
+        fetchJson<Category[]>('/api/categories', []),
       ])
       setTasks(tasksData)
       setCategories(categoriesData)

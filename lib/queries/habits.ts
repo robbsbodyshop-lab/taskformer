@@ -8,36 +8,44 @@ export type HabitWithCompletions = Prisma.HabitGetPayload<{
 }>
 
 export async function getHabits() {
-  return await db.habit.findMany({
-    where: {
-      archived: false,
-    },
-    include: {
-      completions: {
-        orderBy: {
-          date: 'desc',
-        },
+  try {
+    return await db.habit.findMany({
+      where: {
+        archived: false,
       },
-      category: true,
-    },
-    orderBy: {
-      createdAt: 'desc',
-    },
-  })
+      include: {
+        completions: {
+          orderBy: {
+            date: 'desc',
+          },
+        },
+        category: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    })
+  } catch {
+    return []
+  }
 }
 
 export async function getHabitById(id: string) {
-  return await db.habit.findUnique({
-    where: { id },
-    include: {
-      completions: {
-        orderBy: {
-          date: 'desc',
+  try {
+    return await db.habit.findUnique({
+      where: { id },
+      include: {
+        completions: {
+          orderBy: {
+            date: 'desc',
+          },
         },
+        category: true,
       },
-      category: true,
-    },
-  })
+    })
+  } catch {
+    return null
+  }
 }
 
 export async function getHabitsWithStreaks() {
@@ -53,40 +61,52 @@ export async function getHabitCompletionForDate(habitId: string, date: Date) {
   const start = startOfDay(date)
   const end = endOfDay(date)
 
-  return await db.habitCompletion.findFirst({
-    where: {
-      habitId,
-      date: {
-        gte: start,
-        lte: end,
+  try {
+    return await db.habitCompletion.findFirst({
+      where: {
+        habitId,
+        date: {
+          gte: start,
+          lte: end,
+        },
       },
-    },
-  })
+    })
+  } catch {
+    return null
+  }
 }
 
 export async function getHabitStats() {
-  const totalHabits = await db.habit.count({
-    where: { archived: false },
-  })
+  try {
+    const totalHabits = await db.habit.count({
+      where: { archived: false },
+    })
 
-  const habitsWithCompletions = await db.habit.findMany({
-    where: { archived: false },
-    include: {
-      completions: true,
-    },
-  })
+    const habitsWithCompletions = await db.habit.findMany({
+      where: { archived: false },
+      include: {
+        completions: true,
+      },
+    })
 
-  const streaks = habitsWithCompletions.map((habit) =>
-    calculateStreak(habit, habit.completions)
-  )
+    const streaks = habitsWithCompletions.map((habit) =>
+      calculateStreak(habit, habit.completions)
+    )
 
-  const longestStreak = Math.max(...streaks.map((s) => s.longestStreak), 0)
-  const activeStreaks = streaks.filter((s) => s.currentStreak > 0).length
+    const longestStreak = Math.max(...streaks.map((s) => s.longestStreak), 0)
+    const activeStreaks = streaks.filter((s) => s.currentStreak > 0).length
 
-  return {
-    totalHabits,
-    activeStreaks,
-    longestStreak,
+    return {
+      totalHabits,
+      activeStreaks,
+      longestStreak,
+    }
+  } catch {
+    return {
+      totalHabits: 0,
+      activeStreaks: 0,
+      longestStreak: 0,
+    }
   }
 }
 
@@ -94,16 +114,20 @@ export async function getHabitCompletionsForMonth(habitId: string, month: Date) 
   const startOfMonth = new Date(month.getFullYear(), month.getMonth(), 1)
   const endOfMonth = new Date(month.getFullYear(), month.getMonth() + 1, 0, 23, 59, 59)
 
-  return await db.habitCompletion.findMany({
-    where: {
-      habitId,
-      date: {
-        gte: startOfMonth,
-        lte: endOfMonth,
+  try {
+    return await db.habitCompletion.findMany({
+      where: {
+        habitId,
+        date: {
+          gte: startOfMonth,
+          lte: endOfMonth,
+        },
       },
-    },
-    orderBy: {
-      date: 'asc',
-    },
-  })
+      orderBy: {
+        date: 'asc',
+      },
+    })
+  } catch {
+    return []
+  }
 }

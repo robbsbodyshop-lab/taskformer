@@ -37,8 +37,8 @@ import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
 import { createTask, updateTask } from '@/app/(dashboard)/tasks/actions'
 import { toast } from 'sonner'
-import { TaskWithCategory } from '@/lib/queries/tasks'
-import { Category } from '@prisma/client'
+import type { TaskWithCategory } from '@/lib/queries/tasks'
+import type { Category } from '@prisma/client'
 
 interface TaskFormProps {
   open: boolean

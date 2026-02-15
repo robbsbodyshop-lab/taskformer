@@ -44,27 +44,35 @@ export async function getTasks(filters?: TaskFilters) {
     }
   }
 
-  return await db.task.findMany({
-    where,
-    include: {
-      category: true,
-    },
-    orderBy: [
-      { completed: 'asc' },
-      { priority: 'desc' },
-      { dueDate: 'asc' },
-      { createdAt: 'desc' },
-    ],
-  })
+  try {
+    return await db.task.findMany({
+      where,
+      include: {
+        category: true,
+      },
+      orderBy: [
+        { completed: 'asc' },
+        { priority: 'desc' },
+        { dueDate: 'asc' },
+        { createdAt: 'desc' },
+      ],
+    })
+  } catch {
+    return []
+  }
 }
 
 export async function getTaskById(id: string) {
-  return await db.task.findUnique({
-    where: { id },
-    include: {
-      category: true,
-    },
-  })
+  try {
+    return await db.task.findUnique({
+      where: { id },
+      include: {
+        category: true,
+      },
+    })
+  } catch {
+    return null
+  }
 }
 
 export async function getTasksForToday() {
@@ -73,69 +81,86 @@ export async function getTasksForToday() {
   const tomorrow = new Date(today)
   tomorrow.setDate(tomorrow.getDate() + 1)
 
-  return await db.task.findMany({
-    where: {
-      completed: false,
-      OR: [
-        {
-          dueDate: {
-            gte: today,
-            lt: tomorrow,
+  try {
+    return await db.task.findMany({
+      where: {
+        completed: false,
+        OR: [
+          {
+            dueDate: {
+              gte: today,
+              lt: tomorrow,
+            },
           },
-        },
-        {
-          dueDate: null,
-        },
+          {
+            dueDate: null,
+          },
+        ],
+      },
+      include: {
+        category: true,
+      },
+      orderBy: [
+        { priority: 'desc' },
+        { dueDate: 'asc' },
       ],
-    },
-    include: {
-      category: true,
-    },
-    orderBy: [
-      { priority: 'desc' },
-      { dueDate: 'asc' },
-    ],
-  })
+    })
+  } catch {
+    return []
+  }
 }
 
 export async function getOverdueTasks() {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
 
-  return await db.task.findMany({
-    where: {
-      completed: false,
-      dueDate: {
-        lt: today,
+  try {
+    return await db.task.findMany({
+      where: {
+        completed: false,
+        dueDate: {
+          lt: today,
+        },
       },
-    },
-    include: {
-      category: true,
-    },
-    orderBy: [
-      { dueDate: 'asc' },
-      { priority: 'desc' },
-    ],
-  })
+      include: {
+        category: true,
+      },
+      orderBy: [
+        { dueDate: 'asc' },
+        { priority: 'desc' },
+      ],
+    })
+  } catch {
+    return []
+  }
 }
 
 export async function getTaskStats() {
-  const total = await db.task.count()
-  const completed = await db.task.count({ where: { completed: true } })
-  const active = total - completed
-  const overdue = await db.task.count({
-    where: {
-      completed: false,
-      dueDate: {
-        lt: new Date(),
+  try {
+    const total = await db.task.count()
+    const completed = await db.task.count({ where: { completed: true } })
+    const active = total - completed
+    const overdue = await db.task.count({
+      where: {
+        completed: false,
+        dueDate: {
+          lt: new Date(),
+        },
       },
-    },
-  })
+    })
 
-  return {
-    total,
-    completed,
-    active,
-    overdue,
+    return {
+      total,
+      completed,
+      active,
+      overdue,
+    }
+  } catch {
+    return {
+      total: 0,
+      completed: 0,
+      active: 0,
+      overdue: 0,
+    }
   }
 }

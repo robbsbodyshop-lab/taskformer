@@ -5,10 +5,8 @@ import { Button } from '@/components/ui/button'
 import { Plus } from 'lucide-react'
 import { HabitCard } from '@/components/habits/habit-card'
 import { HabitForm } from '@/components/habits/habit-form'
-import { getHabits } from '@/lib/queries/habits'
-import { getCategories } from '@/lib/queries/categories'
-import { HabitWithCompletions } from '@/lib/queries/habits'
-import { Category } from '@prisma/client'
+import type { HabitWithCompletions } from '@/lib/queries/habits'
+import type { Category } from '@prisma/client'
 
 export default function HabitsPage() {
   const [habits, setHabits] = useState<HabitWithCompletions[]>([])
@@ -17,12 +15,22 @@ export default function HabitsPage() {
   const [editingHabit, setEditingHabit] = useState<HabitWithCompletions | undefined>()
   const [isLoading, setIsLoading] = useState(true)
 
+  const fetchJson = async <T,>(url: string, fallback: T): Promise<T> => {
+    try {
+      const response = await fetch(url, { cache: 'no-store' })
+      if (!response.ok) return fallback
+      return (await response.json()) as T
+    } catch {
+      return fallback
+    }
+  }
+
   const loadData = async () => {
     setIsLoading(true)
     try {
       const [habitsData, categoriesData] = await Promise.all([
-        getHabits(),
-        getCategories(),
+        fetchJson<HabitWithCompletions[]>('/api/habits', []),
+        fetchJson<Category[]>('/api/categories', []),
       ])
       setHabits(habitsData)
       setCategories(categoriesData)

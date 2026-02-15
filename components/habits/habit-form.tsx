@@ -32,8 +32,8 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { createHabit, updateHabit } from '@/app/(dashboard)/habits/actions'
 import { toast } from 'sonner'
-import { HabitWithCompletions } from '@/lib/queries/habits'
-import { Category } from '@prisma/client'
+import type { HabitWithCompletions } from '@/lib/queries/habits'
+import type { Category } from '@prisma/client'
 
 interface HabitFormProps {
   open: boolean
