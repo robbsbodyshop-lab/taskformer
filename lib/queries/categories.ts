@@ -13,8 +13,7 @@ export async function getCategories(): Promise<Category[]> {
     return await db.category.findMany({
       orderBy: { order: 'asc' },
     })
-  } catch (error) {
-    console.error('Failed to load categories:', error)
+  } catch {
     return []
   }
 }
@@ -24,8 +23,7 @@ export async function getCategoryById(id: string): Promise<Category | null> {
     return await db.category.findUnique({
       where: { id },
     })
-  } catch (error) {
-    console.error('Failed to load category by id:', error)
+  } catch {
     return null
   }
 }
@@ -43,8 +41,7 @@ export async function getCategoryWithCounts(id: string): Promise<CategoryWithCou
         },
       },
     })
-  } catch (error) {
-    console.error('Failed to load category with counts:', error)
+  } catch {
     return null
   }
 }
@@ -62,8 +59,7 @@ export async function getAllCategoriesWithCounts(): Promise<CategoryWithCounts[]
         },
       },
     })
-  } catch (error) {
-    console.error('Failed to load categories with counts:', error)
+  } catch {
     return []
   }
 }
