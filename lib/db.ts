@@ -9,6 +9,16 @@ if (!process.env.DATABASE_URL) {
   process.env.DATABASE_URL = 'postgresql://postgres:postgres@localhost:5432/taskformer'
 }
 
+// Ensure Supabase connections use SSL even if env omits it.
+if (
+  process.env.DATABASE_URL &&
+  process.env.DATABASE_URL.includes('supabase.co') &&
+  !process.env.DATABASE_URL.includes('sslmode=')
+) {
+  const separator = process.env.DATABASE_URL.includes('?') ? '&' : '?'
+  process.env.DATABASE_URL = `${process.env.DATABASE_URL}${separator}sslmode=require`
+}
+
 export const db =
   globalForPrisma.prisma ??
   new PrismaClient({
