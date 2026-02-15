@@ -7,8 +7,8 @@ export function ThemedWelcome() {
 
   const messages = {
     tmnt: {
-      title: 'Cowabunga! Welcome to TaskFormer',
-      subtitle: 'Your radical task and habit tracker - Turtle Power! 🐢🍕',
+      title: 'Cowabunga! Press Start',
+      subtitle: 'Arcade mode active: stack XP, build streaks, and shell-shock your goals.',
     },
     transformers: {
       title: 'Transform and Roll Out!',
@@ -19,7 +19,7 @@ export function ThemedWelcome() {
   const message = messages[theme]
 
   return (
-    <div>
+    <div className={theme === 'tmnt' ? 'rounded-xl border border-primary/40 bg-card/70 px-4 py-3 shadow-[0_0_28px_rgba(46,230,107,0.16)]' : ''}>
       <h1 className="text-3xl font-bold tracking-tight">{message.title}</h1>
       <p className="text-muted-foreground">{message.subtitle}</p>
     </div>

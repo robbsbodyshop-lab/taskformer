@@ -20,7 +20,12 @@ export function DashboardHeader() {
       <div className="container flex h-14 md:h-16 items-center">
         <Link href="/" className="flex items-center gap-2 font-bold text-xl">
           <span className="text-2xl">{logoIcon}</span>
-          <span className="hidden sm:inline">{logoText}</span>
+          <span
+            className="hidden sm:inline tracking-wide"
+            style={theme === 'tmnt' ? { textShadow: '0 0 10px rgba(46, 230, 107, 0.35)' } : undefined}
+          >
+            {logoText}
+          </span>
         </Link>
 
         {/* Level badge - visible on all sizes */}

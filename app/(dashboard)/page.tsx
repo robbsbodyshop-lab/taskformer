@@ -193,7 +193,8 @@ export default function DashboardPage() {
 
       {/* Stats Cards */}
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-        <Card>
+        <Link href="/tasks?new=1" className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl">
+          <Card className="transition-all hover:shadow-md hover:border-primary/50 cursor-pointer">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Tasks</CardTitle>
             <CheckSquare className="h-4 w-4 text-muted-foreground" />
@@ -203,8 +204,10 @@ export default function DashboardPage() {
             <p className="text-xs text-muted-foreground">
               {data.completedTasks} completed
             </p>
+            <p className="text-[11px] text-primary mt-2">Click to add a task</p>
           </CardContent>
-        </Card>
+          </Card>
+        </Link>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -219,18 +222,21 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Categories</CardTitle>
-            <FolderKanban className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{data.categories}</div>
-            <p className="text-xs text-muted-foreground">
-              {data.categories === 0 ? 'No categories yet' : 'Organize your work'}
-            </p>
-          </CardContent>
-        </Card>
+        <Link href="/categories?new=1" className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl">
+          <Card className="transition-all hover:shadow-md hover:border-primary/50 cursor-pointer">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Categories</CardTitle>
+              <FolderKanban className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{data.categories}</div>
+              <p className="text-xs text-muted-foreground">
+                {data.categories === 0 ? 'No categories yet' : 'Organize your work'}
+              </p>
+              <p className="text-[11px] text-primary mt-2">Click to add a category</p>
+            </CardContent>
+          </Card>
+        </Link>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

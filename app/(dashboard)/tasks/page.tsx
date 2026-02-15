@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Plus, SlidersHorizontal } from 'lucide-react'
 import { TaskCard } from '@/components/tasks/task-card'
@@ -17,6 +18,7 @@ export default function TasksPage() {
   const [filters, setFilters] = useState<TaskFilterState>({})
   const [isLoading, setIsLoading] = useState(true)
   const [showFilters, setShowFilters] = useState(false)
+  const searchParams = useSearchParams()
 
   const fetchJson = async <T,>(url: string, fallback: T): Promise<T> => {
     try {
@@ -64,6 +66,13 @@ export default function TasksPage() {
   useEffect(() => {
     void loadData()
   }, [loadData])
+
+  useEffect(() => {
+    if (searchParams.get('new') === '1') {
+      setEditingTask(undefined)
+      setIsFormOpen(true)
+    }
+  }, [searchParams])
 
   const handleCreateTask = () => {
     setEditingTask(undefined)

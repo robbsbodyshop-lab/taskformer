@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -15,6 +16,13 @@ import { CategoryForm } from './category-form'
 
 export function CreateCategoryButton() {
   const [open, setOpen] = useState(false)
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    if (searchParams.get('new') === '1') {
+      setOpen(true)
+    }
+  }, [searchParams])
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
