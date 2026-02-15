@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { Suspense, useCallback, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Plus, SlidersHorizontal } from 'lucide-react'
@@ -12,6 +12,14 @@ import { useTurtle } from '@/lib/contexts/turtle-context'
 import type { Category } from '@prisma/client'
 
 export default function TasksPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-[400px]"><p className="text-muted-foreground">Loading tasks...</p></div>}>
+      <TasksPageContent />
+    </Suspense>
+  )
+}
+
+function TasksPageContent() {
   const [tasks, setTasks] = useState<TaskWithCategory[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [isFormOpen, setIsFormOpen] = useState(false)
