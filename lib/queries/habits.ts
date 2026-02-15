@@ -15,7 +15,7 @@ export async function getHabits() {
     include: {
       completions: {
         orderBy: {
-          completedAt: 'desc',
+          date: 'desc',
         },
       },
       category: true,
@@ -32,7 +32,7 @@ export async function getHabitById(id: string) {
     include: {
       completions: {
         orderBy: {
-          completedAt: 'desc',
+          date: 'desc',
         },
       },
       category: true,
@@ -56,7 +56,7 @@ export async function getHabitCompletionForDate(habitId: string, date: Date) {
   return await db.habitCompletion.findFirst({
     where: {
       habitId,
-      completedAt: {
+      date: {
         gte: start,
         lte: end,
       },
@@ -97,13 +97,13 @@ export async function getHabitCompletionsForMonth(habitId: string, month: Date) 
   return await db.habitCompletion.findMany({
     where: {
       habitId,
-      completedAt: {
+      date: {
         gte: startOfMonth,
         lte: endOfMonth,
       },
     },
     orderBy: {
-      completedAt: 'asc',
+      date: 'asc',
     },
   })
 }

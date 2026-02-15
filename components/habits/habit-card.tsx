@@ -36,7 +36,7 @@ export function HabitCard({ habit, onEdit }: HabitCardProps) {
 
   const streak = calculateStreak(habit, habit.completions)
   const completedToday = habit.completions.some((c) =>
-    isToday(new Date(c.completedAt))
+    isToday(new Date(c.date))
   )
 
   const xpValue = getHabitXP(streak.currentStreak)

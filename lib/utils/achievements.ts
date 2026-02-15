@@ -69,10 +69,10 @@ const ACHIEVEMENT_DEFS: AchievementDef[] = [
       // Check if any habit has 7+ consecutive completions
       // We'll check by looking at the best streak from recent completions
       const habits = await db.habit.findMany({
-        include: { completions: { orderBy: { completedAt: 'desc' }, take: 30 } },
+        include: { completions: { orderBy: { date: 'desc' }, take: 30 } },
       })
       for (const habit of habits) {
-        if (getStreakLength(habit.completions.map((c) => c.completedAt)) >= 7) {
+        if (getStreakLength(habit.completions.map((c) => c.date)) >= 7) {
           return true
         }
       }
@@ -87,10 +87,10 @@ const ACHIEVEMENT_DEFS: AchievementDef[] = [
     xpReward: 500,
     check: async () => {
       const habits = await db.habit.findMany({
-        include: { completions: { orderBy: { completedAt: 'desc' }, take: 60 } },
+        include: { completions: { orderBy: { date: 'desc' }, take: 60 } },
       })
       for (const habit of habits) {
-        if (getStreakLength(habit.completions.map((c) => c.completedAt)) >= 30) {
+        if (getStreakLength(habit.completions.map((c) => c.date)) >= 30) {
           return true
         }
       }

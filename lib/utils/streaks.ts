@@ -29,7 +29,7 @@ export function calculateStreak(
 
   const today = startOfDay(new Date())
   const sortedCompletions = completions
-    .map((c) => startOfDay(c.completedAt))
+    .map((c) => startOfDay(c.date))
     .sort((a, b) => b.getTime() - a.getTime())
 
   const lastCompletionDate = sortedCompletions[0]
@@ -84,7 +84,7 @@ export function calculateStreak(
   // Calculate completion rate (last 30 days)
   const thirtyDaysAgo = subDays(today, 30)
   const recentCompletions = completions.filter(
-    (c) => startOfDay(c.completedAt) >= thirtyDaysAgo
+    (c) => startOfDay(c.date) >= thirtyDaysAgo
   )
   const completionRate = (recentCompletions.length / 30) * 100
 
@@ -107,7 +107,7 @@ export function isHabitCompletedOnDate(
   date: Date
 ): boolean {
   const targetDate = startOfDay(date)
-  return completions.some((c) => isSameDay(startOfDay(c.completedAt), targetDate))
+  return completions.some((c) => isSameDay(startOfDay(c.date), targetDate))
 }
 
 /**

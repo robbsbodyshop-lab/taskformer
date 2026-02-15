@@ -12,7 +12,7 @@ export const habitSchema = z.object({
 
 export const habitCompletionSchema = z.object({
   habitId: z.string().cuid(),
-  completedAt: z.coerce.date(),
+  date: z.coerce.date(),
   note: z.string().max(500, 'Note must be 500 characters or less').optional(),
 })
 

@@ -113,7 +113,7 @@ export async function toggleHabitCompletion(
     const existingCompletion = await db.habitCompletion.findFirst({
       where: {
         habitId,
-        completedAt: {
+        date: {
           gte: start,
           lte: end,
         },
@@ -136,7 +136,7 @@ export async function toggleHabitCompletion(
       await db.habitCompletion.create({
         data: {
           habitId,
-          completedAt: date,
+          date: date,
         },
       })
 

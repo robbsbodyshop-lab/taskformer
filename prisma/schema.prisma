@@ -72,12 +72,12 @@ model HabitCompletion {
   id        String   @id @default(cuid())
   habitId   String
   habit     Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
-  completedAt DateTime @db.Date // Completion date only
+  date      DateTime @db.Date // Completion date only
   note      String?  @db.Text
   createdAt DateTime @default(now())
 
-  @@unique([habitId, completedAt]) // One completion per habit per day
-  @@index([habitId, completedAt])
+  @@unique([habitId, date]) // One completion per habit per day
+  @@index([habitId, date])
 }
 
 // Game Progress - Singleton row tracking player level and XP

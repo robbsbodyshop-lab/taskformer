@@ -34,7 +34,7 @@ export function HabitCalendar({ completions }: HabitCalendarProps) {
 
   const isCompleted = (day: Date) => {
     return completions.some((completion) =>
-      isSameDay(new Date(completion.completedAt), day)
+      isSameDay(new Date(completion.date), day)
     )
   }
 
