@@ -180,8 +180,8 @@ export function TaskCard({ task, onEdit }: TaskCardProps) {
             )}
 
             {/* Turtle role badge */}
-            {'turtleRole' in task && typeof (task as Record<string, string>).turtleRole === 'string' && (
-              <TurtleRoleBadge role={(task as Record<string, string>).turtleRole} />
+            {'turtleRole' in task && typeof (task as unknown as Record<string, string>).turtleRole === 'string' && (
+              <TurtleRoleBadge role={(task as unknown as Record<string, string>).turtleRole} />
             )}
 
             {task.category && (
