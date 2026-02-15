@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint app components lib tests *.ts *.mjs",
     "lint:fix": "eslint app components lib tests *.ts *.mjs --fix",
@@ -12,7 +12,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "quality": "npm run lint && npm run typecheck && npm run test && npm run build",
-    "autonomous:cycle": "node scripts/autonomous-cycle.mjs"
+    "autonomous:cycle": "node scripts/autonomous-cycle.mjs",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -20,6 +21,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "framer-motion": "^12.34.0",
     "lucide-react": "^0.564.0",
     "next": "16.1.6",
     "pg": "^8.18.0",

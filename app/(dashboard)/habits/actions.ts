@@ -5,6 +5,11 @@ import { db } from '@/lib/db'
 import { createHabitSchema, updateHabitSchema } from '@/lib/validations/habit'
 import { z } from 'zod'
 import { startOfDay, endOfDay } from 'date-fns'
+import { awardXP, getHabitXP } from '@/lib/utils/xp'
+import { checkAndUnlockAchievements } from '@/lib/utils/achievements'
+import { calculateStreak } from '@/lib/utils/streaks'
+import type { UnlockedAchievement } from '@/lib/utils/achievements'
+import type { AwardResult } from '@/lib/utils/xp'
 
 export async function createHabit(data: z.infer<typeof createHabitSchema>) {
   try {
@@ -90,7 +95,16 @@ export async function toggleHabitArchive(id: string) {
   }
 }
 
-export async function toggleHabitCompletion(habitId: string, date: Date = new Date()) {
+export async function toggleHabitCompletion(
+  habitId: string,
+  date: Date = new Date()
+): Promise<{
+  success: boolean
+  completed?: boolean
+  error?: string
+  xp?: AwardResult
+  newAchievements?: UnlockedAchievement[]
+}> {
   try {
     const start = startOfDay(date)
     const end = endOfDay(date)
@@ -126,11 +140,27 @@ export async function toggleHabitCompletion(habitId: string, date: Date = new Da
         },
       })
 
+      // Calculate streak and award XP
+      const habit = await db.habit.findUnique({
+        where: { id: habitId },
+        include: { completions: true },
+      })
+
+      let xp: AwardResult | undefined
+      let newAchievements: UnlockedAchievement[] = []
+
+      if (habit) {
+        const streak = calculateStreak(habit, habit.completions)
+        const xpAmount = getHabitXP(streak.currentStreak)
+        xp = await awardXP(xpAmount, 'habit_complete', habitId)
+        newAchievements = await checkAndUnlockAchievements()
+      }
+
       revalidatePath('/habits')
       revalidatePath(`/habits/${habitId}`)
       revalidatePath('/')
 
-      return { success: true, completed: true }
+      return { success: true, completed: true, xp, newAchievements }
     }
   } catch {
     return { success: false, error: 'Failed to toggle habit completion' }

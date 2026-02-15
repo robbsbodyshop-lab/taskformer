@@ -48,6 +48,10 @@
 }
 
 :root {
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -186,4 +190,50 @@
 .priority-urgent {
   background-color: var(--priority-urgent);
   color: white;
+}
+
+/* iOS mobile: prevent zoom on input focus */
+@media screen and (max-width: 767px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Touch-friendly minimum target sizes */
+@media (pointer: coarse) {
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* XP popup animation */
+@keyframes xp-float {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  70% { opacity: 1; transform: translateY(-40px) scale(1.1); }
+  100% { opacity: 0; transform: translateY(-60px) scale(0.9); }
+}
+
+.animate-xp-float {
+  animation: xp-float 1.2s ease-out forwards;
+}
+
+/* Level-up particles */
+@keyframes particle-burst {
+  0% { opacity: 1; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
+}
+
+.animate-particle {
+  animation: particle-burst 1s ease-out forwards;
+}
+
+/* Achievement glow */
+@keyframes achievement-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(255, 215, 0, 0.4); }
+  50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
+}
+
+.animate-achievement-glow {
+  animation: achievement-glow 2s ease-in-out 3;
 }

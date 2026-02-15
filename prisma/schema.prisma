@@ -80,6 +80,39 @@ model HabitCompletion {
   @@index([habitId, completedAt])
 }
 
+// Game Progress - Singleton row tracking player level and XP
+model GameProgress {
+  id        String   @id @default("singleton")
+  level     Int      @default(1)
+  currentXP Int      @default(0)
+  totalXP   Int      @default(0)
+  title     String   @default("Novice")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Achievement - Unlocked achievements / badges
+model Achievement {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  name        String
+  description String
+  icon        String
+  xpReward    Int      @default(0)
+  unlockedAt  DateTime @default(now())
+}
+
+// XP Transaction - Log of every XP gain
+model XPTransaction {
+  id        String   @id @default(cuid())
+  amount    Int
+  reason    String
+  entityId  String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
 // Priority Enum - Task priority levels
 enum Priority {
   LOW

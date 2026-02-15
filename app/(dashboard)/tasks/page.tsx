@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Plus } from 'lucide-react'
+import { Plus, SlidersHorizontal } from 'lucide-react'
 import { TaskCard } from '@/components/tasks/task-card'
 import { TaskForm } from '@/components/tasks/task-form'
 import { TaskFilters, TaskFilterState } from '@/components/tasks/task-filters'
@@ -18,6 +18,7 @@ export default function TasksPage() {
   const [editingTask, setEditingTask] = useState<TaskWithCategory | undefined>()
   const [filters, setFilters] = useState<TaskFilterState>({})
   const [isLoading, setIsLoading] = useState(true)
+  const [showFilters, setShowFilters] = useState(false)
 
   const loadData = useCallback(async () => {
     setIsLoading(true)
@@ -70,9 +71,22 @@ export default function TasksPage() {
         </Button>
       </div>
 
+      {/* Mobile filter toggle */}
+      <div className="lg:hidden">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setShowFilters(!showFilters)}
+          className="gap-2"
+        >
+          <SlidersHorizontal className="h-4 w-4" />
+          {showFilters ? 'Hide Filters' : 'Show Filters'}
+        </Button>
+      </div>
+
       <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
-        {/* Filters Sidebar */}
-        <aside>
+        {/* Filters Sidebar - collapsible on mobile */}
+        <aside className={showFilters ? 'block' : 'hidden lg:block'}>
           <TaskFilters
             filters={filters}
             onFiltersChange={setFilters}
