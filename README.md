@@ -1,8 +1,26 @@
 # Taskformer
 
-Taskformer is a Next.js app for task management, habits, and categories.
+Taskformer is a Next.js app for task management, habits, and categories with gamification features.
 
-## Setup
+## One-Click Deploy
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Frobbsbodyshop-lab%2Ftaskformer&env=DATABASE_URL&envDescription=PostgreSQL%20connection%20string%20(get%20a%20free%20one%20from%20Supabase)&envLink=https%3A%2F%2Fsupabase.com%2Fdashboard&project-name=taskformer&repository-name=taskformer)
+
+### Quick Start with Supabase
+
+1. Click the **Deploy with Vercel** button above
+2. Create a free database at [Supabase](https://supabase.com/dashboard):
+   - Sign in with GitHub
+   - Create new project (name: `taskformer`)
+   - Save the database password
+   - Go to Settings → Database → Connection string (URI)
+3. Paste the connection string when Vercel asks for `DATABASE_URL`
+4. After deployment, run migrations:
+   ```bash
+   DATABASE_URL="your-connection-string" npx prisma db push
+   ```
+
+## Local Setup
 
 1. Copy environment template:
 
