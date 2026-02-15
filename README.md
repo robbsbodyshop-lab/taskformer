@@ -1,46 +1,65 @@
-# TaskFormer
+# Taskformer
 
-A powerful task management and habit tracking application built with Next.js 16, Prisma, and shadcn/ui.
+Taskformer is a Next.js app for task management, habits, and categories.
 
-## Features
+## Setup
 
-- 📝 **Task Management**: Create, edit, and organize tasks with priorities, due dates, and reminders
-- 🎯 **Habit Tracking**: Build and maintain habits with streak tracking and statistics
-- 📊 **Categories**: Organize tasks and habits with customizable categories
-- 🎨 **Modern UI**: Beautiful, responsive interface built with shadcn/ui
-- 💾 **PostgreSQL Database**: Reliable data persistence with Prisma ORM
+1. Copy environment template:
 
-## Tech Stack
+```bash
+cp .env.example .env
+```
 
-- **Framework**: Next.js 16 with App Router
-- **Database**: PostgreSQL + Prisma ORM
-- **UI**: shadcn/ui (Radix UI primitives)
-- **Styling**: Tailwind CSS 4
-- **Validation**: Zod
-- **Notifications**: Sonner
+2. Install dependencies:
 
-## Getting Started
-
-\`\`\`bash
-# Install dependencies
+```bash
 npm install
+```
 
-# Set up database
-npx prisma migrate dev
+3. Generate Prisma client:
 
-# Start development server
+```bash
+npx prisma generate
+```
+
+4. Start development server:
+
+```bash
 npm run dev
-\`\`\`
+```
 
-Visit [http://localhost:3000](http://localhost:3000) to see the application.
+## Quality gates
 
-## Project Status
+Run the full production-quality gate:
 
-✅ Phase 1: Foundation setup with database, UI, and category management (Complete)
-🚧 Phase 2: Task management (In progress)
-📋 Phase 3: Habit tracking with streaks
-🔔 Phase 4: Reminders and dashboard
+```bash
+npm run quality
+```
 
-## License
+This executes:
+- `npm run lint`
+- `npm run typecheck`
+- `npm run test`
+- `npm run build`
 
-MIT
+## Autonomous build-test loop
+
+Run the autonomous validation cycle:
+
+```bash
+npm run autonomous:cycle
+```
+
+By default it runs 5 consecutive cycles of lint, typecheck, test, and build.
+
+You can override cycle count:
+
+```bash
+AUTONOMOUS_MAX_CYCLES=2 npm run autonomous:cycle
+```
+
+On Windows PowerShell:
+
+```powershell
+$env:AUTONOMOUS_MAX_CYCLES="2"; npm run autonomous:cycle
+```

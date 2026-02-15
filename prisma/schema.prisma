@@ -1,0 +1,96 @@
+// TaskFormer Database Schema
+// Full-featured task and habit tracker with categories, priorities, and streak tracking
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Category Model - Organize tasks and habits
+model Category {
+  id        String   @id @default(cuid())
+  name      String
+  color     String   // hex color for UI display
+  icon      String?  // optional emoji or icon name
+  order     Int      @default(0) // for custom sorting
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tasks     Task[]
+  habits    Habit[]
+}
+
+// Task Model - ToDo items with full feature set
+model Task {
+  id          String    @id @default(cuid())
+  title       String
+  description String?   @db.Text
+  completed   Boolean   @default(false)
+  priority    Priority  @default(MEDIUM)
+  dueDate     DateTime?
+  reminderAt  DateTime?
+
+  categoryId  String?
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  completedAt DateTime?
+
+  @@index([completed, dueDate])
+  @@index([categoryId])
+}
+
+// Habit Model - Trackable habits with frequency settings
+model Habit {
+  id          String    @id @default(cuid())
+  name        String
+  description String?   @db.Text
+  frequency   Frequency @default(DAILY)
+  targetDays  Int[]     // [0,1,2,3,4,5,6] for days of week (0=Sunday)
+  color       String    @default("#3b82f6")
+
+  categoryId  String?
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  archived    Boolean   @default(false)
+
+  completions HabitCompletion[]
+
+  @@index([archived])
+  @@index([categoryId])
+}
+
+// HabitCompletion Model - Daily check-ins for habits
+model HabitCompletion {
+  id        String   @id @default(cuid())
+  habitId   String
+  habit     Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  completedAt DateTime @db.Date // Completion date only
+  note      String?  @db.Text
+  createdAt DateTime @default(now())
+
+  @@unique([habitId, completedAt]) // One completion per habit per day
+  @@index([habitId, completedAt])
+}
+
+// Priority Enum - Task priority levels
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+// Frequency Enum - Habit frequency types
+enum Frequency {
+  DAILY
+  WEEKLY
+  CUSTOM
+}
