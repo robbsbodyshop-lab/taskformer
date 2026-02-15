@@ -9,30 +9,19 @@ if (!process.env.DATABASE_URL) {
   process.env.DATABASE_URL = 'postgresql://postgres:postgres@localhost:5432/taskformer'
 }
 
-// Ensure Supabase connections use SSL even if env omits it.
+// Ensure Supabase connections use SSL and connection limits for serverless.
 if (
-  process.env.DATABASE_URL &&
-  process.env.DATABASE_URL.includes('supabase.co') &&
-  !process.env.DATABASE_URL.includes('sslmode=')
-) {
-  const separator = process.env.DATABASE_URL.includes('?') ? '&' : '?'
-  process.env.DATABASE_URL = `${process.env.DATABASE_URL}${separator}sslmode=require`
-}
-
-// On Vercel, prefer Supabase pooler to avoid connection issues.
-if (
-  process.env.VERCEL &&
   process.env.DATABASE_URL &&
   process.env.DATABASE_URL.includes('supabase.co')
 ) {
   try {
     const url = new URL(process.env.DATABASE_URL)
-    if (url.port === '5432') {
-      url.port = '6543'
-    }
-    url.searchParams.set('pgbouncer', 'true')
-    url.searchParams.set('connection_limit', '1')
+    // Always use SSL for Supabase
     url.searchParams.set('sslmode', 'require')
+    // Limit connections in serverless environments to avoid exhausting the pool
+    if (process.env.VERCEL) {
+      url.searchParams.set('connection_limit', '1')
+    }
     process.env.DATABASE_URL = url.toString()
   } catch {
     // Keep original URL if parsing fails
