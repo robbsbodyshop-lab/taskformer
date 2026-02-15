@@ -12,14 +12,16 @@ if (!process.env.DATABASE_URL) {
 // Ensure Supabase connections use SSL and connection limits for serverless.
 if (
   process.env.DATABASE_URL &&
-  process.env.DATABASE_URL.includes('supabase.co')
+  (process.env.DATABASE_URL.includes('supabase.co') ||
+   process.env.DATABASE_URL.includes('supabase.com'))
 ) {
   try {
     const url = new URL(process.env.DATABASE_URL)
-    // Always use SSL for Supabase
-    url.searchParams.set('sslmode', 'require')
+    if (!url.searchParams.has('sslmode')) {
+      url.searchParams.set('sslmode', 'require')
+    }
     // Limit connections in serverless environments to avoid exhausting the pool
-    if (process.env.VERCEL) {
+    if (process.env.VERCEL && !url.searchParams.has('connection_limit')) {
       url.searchParams.set('connection_limit', '1')
     }
     process.env.DATABASE_URL = url.toString()
