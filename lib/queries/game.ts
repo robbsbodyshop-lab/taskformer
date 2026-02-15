@@ -83,14 +83,18 @@ export async function getXPToday(): Promise<number> {
 
 /** Returns count of tasks completed today. */
 export async function getTasksCompletedToday(): Promise<number> {
-  const today = new Date()
-  return db.task.count({
-    where: {
-      completed: true,
-      completedAt: {
-        gte: startOfDay(today),
-        lte: endOfDay(today),
+  try {
+    const today = new Date()
+    return await db.task.count({
+      where: {
+        completed: true,
+        completedAt: {
+          gte: startOfDay(today),
+          lte: endOfDay(today),
+        },
       },
-    },
-  })
+    })
+  } catch {
+    return 0
+  }
 }

@@ -4,8 +4,7 @@ import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { CheckSquare, Calendar, FolderKanban, TrendingUp, Trophy, Zap, Target } from 'lucide-react'
 import { ThemedWelcome } from '@/components/shared/themed-welcome'
-import { getDashboardData } from '@/lib/queries/dashboard'
-import { getAchievements, getXPToday, getTasksCompletedToday } from '@/lib/queries/game'
+import type { getDashboardData } from '@/lib/queries/dashboard'
 import { TaskCard } from '@/components/tasks/task-card'
 import { XPBar } from '@/components/game/xp-bar'
 import { useGame } from '@/lib/contexts/game-context'
@@ -13,8 +12,17 @@ import { achievementIconMap } from '@/components/game/achievement-icon'
 import Link from 'next/link'
 import type { Achievement } from '@prisma/client'
 
+type DashboardData = Awaited<ReturnType<typeof getDashboardData>>
+
+type DashboardResponse = {
+  dashboardData: DashboardData
+  achievements: Achievement[]
+  xpToday: number
+  tasksToday: number
+}
+
 export default function DashboardPage() {
-  const [data, setData] = useState<Awaited<ReturnType<typeof getDashboardData>> | null>(null)
+  const [data, setData] = useState<DashboardData | null>(null)
   const [achievements, setAchievements] = useState<Achievement[]>([])
   const [xpToday, setXPToday] = useState(0)
   const [tasksToday, setTasksToday] = useState(0)
@@ -22,19 +30,22 @@ export default function DashboardPage() {
   const [loadError, setLoadError] = useState<string | null>(null)
   const { progress } = useGame()
 
+  const fetchJson = async <T,>(url: string): Promise<T> => {
+    const response = await fetch(url, { cache: 'no-store' })
+    if (!response.ok) {
+      throw new Error(`Request failed: ${response.status}`)
+    }
+    return (await response.json()) as T
+  }
+
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [dashboardData, achievementsData, xpTodayData, tasksTodayData] = await Promise.all([
-          getDashboardData(),
-          getAchievements(),
-          getXPToday(),
-          getTasksCompletedToday(),
-        ])
-        setData(dashboardData)
-        setAchievements(achievementsData)
-        setXPToday(xpTodayData)
-        setTasksToday(tasksTodayData)
+        const payload = await fetchJson<DashboardResponse>('/api/dashboard')
+        setData(payload.dashboardData)
+        setAchievements(payload.achievements)
+        setXPToday(payload.xpToday)
+        setTasksToday(payload.tasksToday)
       } catch (error) {
         console.error('Failed to load dashboard data:', error)
         setLoadError('Unable to load dashboard data. Check database configuration and try again.')
