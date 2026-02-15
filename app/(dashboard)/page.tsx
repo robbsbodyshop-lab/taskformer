@@ -20,6 +20,7 @@ import { BrotherhoodMeter } from '@/components/game/brotherhood-meter'
 import { StoryArcCard } from '@/components/game/story-arc-card'
 import { WeaponBonusCard } from '@/components/game/weapon-bonus-card'
 import { AllyPanel } from '@/components/game/ally-panel'
+import { PomodoroTimer } from '@/components/game/pomodoro-timer'
 
 type DashboardData = Awaited<ReturnType<typeof getDashboardData>>
 
@@ -203,8 +204,11 @@ export default function DashboardPage() {
       {/* Splinter Guidance (#4) */}
       <SplinterGuidance />
 
-      {/* TMNT Feature Grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {/* Pomodoro + TMNT Feature Grid */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {/* Pomodoro Timer */}
+        <PomodoroTimer />
+
         {/* Casey Chaos Mode (#6) */}
         <CaseyMode />
 
