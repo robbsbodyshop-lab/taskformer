@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getCategories } from '@/lib/queries/categories'
 import { db } from '@/lib/db'
 import { categorySchema } from '@/lib/validations/category'
+import { ZodError } from 'zod'
 
 export const dynamic = 'force-dynamic'
 
@@ -18,10 +19,21 @@ export async function POST(request: Request) {
       data: validated,
     })
     return NextResponse.json({ success: true, category })
-  } catch {
+  } catch (error) {
+    console.error('[POST /api/categories] Error:', error)
+
+    if (error instanceof ZodError) {
+      return NextResponse.json(
+        { success: false, error: 'Validation failed', details: error.flatten().fieldErrors },
+        { status: 400 }
+      )
+    }
+
+    const message =
+      error instanceof Error ? error.message : 'Failed to create category'
     return NextResponse.json(
-      { success: false, error: 'Failed to create category' },
-      { status: 400 }
+      { success: false, error: message },
+      { status: 500 }
     )
   }
 }
