@@ -19,6 +19,26 @@ if (
   process.env.DATABASE_URL = `${process.env.DATABASE_URL}${separator}sslmode=require`
 }
 
+// On Vercel, prefer Supabase pooler to avoid connection issues.
+if (
+  process.env.VERCEL &&
+  process.env.DATABASE_URL &&
+  process.env.DATABASE_URL.includes('supabase.co')
+) {
+  try {
+    const url = new URL(process.env.DATABASE_URL)
+    if (url.port === '5432') {
+      url.port = '6543'
+    }
+    url.searchParams.set('pgbouncer', 'true')
+    url.searchParams.set('connection_limit', '1')
+    url.searchParams.set('sslmode', 'require')
+    process.env.DATABASE_URL = url.toString()
+  } catch {
+    // Keep original URL if parsing fails
+  }
+}
+
 export const db =
   globalForPrisma.prisma ??
   new PrismaClient({
