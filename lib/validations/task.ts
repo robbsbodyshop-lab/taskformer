@@ -6,8 +6,18 @@ const taskBaseSchema = z.object({
   priority: z.enum(['LOW', 'MEDIUM', 'HIGH', 'URGENT']).default('MEDIUM'),
   dueDate: z.coerce.date().optional(),
   reminderAt: z.coerce.date().optional(),
-  categoryId: z.string().cuid().optional(),
-  turtleRole: z.enum(['LEADERSHIP', 'RESEARCH', 'EXECUTION', 'CREATIVE']).optional(),
+  categoryId: z
+    .union([z.string().cuid(), z.literal('none'), z.literal('')])
+    .optional()
+    .transform((v) => (v === 'none' || v === '' ? undefined : v)),
+  turtleRole: z
+    .union([
+      z.enum(['LEADERSHIP', 'RESEARCH', 'EXECUTION', 'CREATIVE']),
+      z.literal('none'),
+      z.literal(''),
+    ])
+    .optional()
+    .transform((v) => (v === 'none' || v === '' ? undefined : v)),
   completed: z.boolean().default(false),
 })
 

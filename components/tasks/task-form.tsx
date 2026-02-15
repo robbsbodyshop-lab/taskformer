@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createTaskSchema } from '@/lib/validations/task'
@@ -62,15 +62,30 @@ export function TaskForm({ open, onOpenChange, task, categories }: TaskFormProps
   const form = useForm({
     resolver: zodResolver(createTaskSchema),
     defaultValues: {
-      title: task?.title || '',
-      description: task?.description || '',
-      priority: task?.priority || 'MEDIUM',
-      categoryId: task?.categoryId || undefined,
-      turtleRole: ((task as Record<string, unknown>)?.turtleRole as 'LEADERSHIP' | 'RESEARCH' | 'EXECUTION' | 'CREATIVE' | undefined) ?? undefined,
-      dueDate: task?.dueDate ? new Date(task.dueDate) : undefined,
-      reminderAt: task?.reminderAt ? new Date(task.reminderAt) : undefined,
+      title: '',
+      description: '',
+      priority: 'MEDIUM',
+      categoryId: undefined,
+      turtleRole: undefined,
+      dueDate: undefined,
+      reminderAt: undefined,
     },
   })
+
+  // Reset form when dialog opens or task changes
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        title: task?.title || '',
+        description: task?.description || '',
+        priority: task?.priority || 'MEDIUM',
+        categoryId: task?.categoryId || undefined,
+        turtleRole: ((task as Record<string, unknown>)?.turtleRole as 'LEADERSHIP' | 'RESEARCH' | 'EXECUTION' | 'CREATIVE' | undefined) ?? undefined,
+        dueDate: task?.dueDate ? new Date(task.dueDate) : undefined,
+        reminderAt: task?.reminderAt ? new Date(task.reminderAt) : undefined,
+      })
+    }
+  }, [open, task])
 
   const onSubmit = async (data: unknown) => {
     setIsSubmitting(true)
