@@ -7,6 +7,7 @@ const taskBaseSchema = z.object({
   dueDate: z.coerce.date().optional(),
   reminderAt: z.coerce.date().optional(),
   categoryId: z.string().cuid().optional(),
+  turtleRole: z.enum(['LEADERSHIP', 'RESEARCH', 'EXECUTION', 'CREATIVE']).optional(),
   completed: z.boolean().default(false),
 })
 

@@ -34,6 +34,8 @@ model Task {
   dueDate     DateTime?
   reminderAt  DateTime?
 
+  turtleRole  String?   // LEADERSHIP | RESEARCH | EXECUTION | CREATIVE (TMNT role)
+
   categoryId  String?
   category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
 

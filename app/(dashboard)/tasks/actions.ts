@@ -13,6 +13,11 @@ export async function createTask(data: z.infer<typeof createTaskSchema>) {
   try {
     const validated = createTaskSchema.parse(data)
 
+    // Clean "none" sentinel value from turtleRole
+    if (validated.turtleRole === 'none' as unknown) {
+      validated.turtleRole = undefined
+    }
+
     const task = await db.task.create({
       data: validated,
     })

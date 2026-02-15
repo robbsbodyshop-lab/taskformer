@@ -39,6 +39,7 @@ import { createTask, updateTask } from '@/app/(dashboard)/tasks/actions'
 import { toast } from 'sonner'
 import type { TaskWithCategory } from '@/lib/queries/tasks'
 import type { Category } from '@prisma/client'
+import { TURTLE_LIST } from '@/lib/data/turtle-personalities'
 
 interface TaskFormProps {
   open: boolean
@@ -65,6 +66,7 @@ export function TaskForm({ open, onOpenChange, task, categories }: TaskFormProps
       description: task?.description || '',
       priority: task?.priority || 'MEDIUM',
       categoryId: task?.categoryId || undefined,
+      turtleRole: ((task as Record<string, unknown>)?.turtleRole as 'LEADERSHIP' | 'RESEARCH' | 'EXECUTION' | 'CREATIVE' | undefined) ?? undefined,
       dueDate: task?.dueDate ? new Date(task.dueDate) : undefined,
       reminderAt: task?.reminderAt ? new Date(task.reminderAt) : undefined,
     },
@@ -190,6 +192,35 @@ export function TaskForm({ open, onOpenChange, task, categories }: TaskFormProps
                 )}
               />
             </div>
+
+            <FormField
+              control={form.control}
+              name="turtleRole"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Turtle Role</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Assign a role (optional)" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="none">None</SelectItem>
+                      {TURTLE_LIST.map((t) => (
+                        <SelectItem key={t.role} value={t.role}>
+                          {t.bandana} {t.roleLabel}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <FormField
               control={form.control}

@@ -1,18 +1,32 @@
 'use client'
 
+import { useMemo } from 'react'
 import { useTheme } from '@/lib/contexts/theme-context'
+import { useTurtle } from '@/lib/contexts/turtle-context'
 
 export function ThemedWelcome() {
   const { theme } = useTheme()
+  const { stanceProfile, dialogues } = useTurtle()
+
+  // Pick a stable greeting from the dialogue set
+  const greeting = useMemo(() => {
+    if (!dialogues?.greeting?.length) return null
+    // Use a deterministic pick based on array length to avoid impure Math.random in render
+    return dialogues.greeting[0]
+  }, [dialogues])
 
   const messages = {
     tmnt: {
-      title: 'Cowabunga! Press Start',
-      subtitle: 'Arcade mode active: stack XP, build streaks, and shell-shock your goals.',
+      title: stanceProfile
+        ? `${stanceProfile.bandana} ${greeting ?? 'Cowabunga! Press Start'}`
+        : 'Cowabunga! Press Start',
+      subtitle: stanceProfile
+        ? `${stanceProfile.name} stance active — ${stanceProfile.focusStyle}`
+        : 'Arcade mode active: stack XP, build streaks, and shell-shock your goals.',
     },
     transformers: {
       title: 'Transform and Roll Out!',
-      subtitle: 'Your powerful task and habit tracking system - More than meets the eye! ⚡🤖',
+      subtitle: 'Your powerful task and habit tracking system - More than meets the eye!',
     },
   }
 

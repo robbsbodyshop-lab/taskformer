@@ -14,6 +14,8 @@ import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { useGame } from '@/lib/contexts/game-context'
 import { getTaskXP } from '@/lib/utils/xp'
+import { TurtleRoleBadge } from '@/components/game/turtle-role-badge'
+import { useTurtle } from '@/lib/contexts/turtle-context'
 
 interface TaskCardProps {
   task: TaskWithCategory
@@ -32,6 +34,7 @@ export function TaskCard({ task, onEdit }: TaskCardProps) {
   const [isToggling, setIsToggling] = useState(false)
   const [showXP, setShowXP] = useState(false)
   const { handleGameReward } = useGame()
+  const { getDialogue } = useTurtle()
 
   const handleToggleCompletion = async () => {
     setIsToggling(true)
@@ -39,7 +42,11 @@ export function TaskCard({ task, onEdit }: TaskCardProps) {
     setIsToggling(false)
 
     if (result.success) {
-      toast.success(task.completed ? 'Task marked as incomplete' : 'Task completed!')
+      // Use turtle-voiced dialogue for completion toast
+      const message = task.completed
+        ? 'Task marked as incomplete'
+        : getDialogue('taskComplete') || 'Task completed!'
+      toast.success(message)
 
       // Trigger game rewards if completing
       if (!task.completed && result.xp) {
@@ -170,6 +177,11 @@ export function TaskCard({ task, onEdit }: TaskCardProps) {
               <Badge variant="outline" className="gap-1 text-muted-foreground">
                 +{xpValue} XP
               </Badge>
+            )}
+
+            {/* Turtle role badge */}
+            {'turtleRole' in task && typeof (task as Record<string, string>).turtleRole === 'string' && (
+              <TurtleRoleBadge role={(task as Record<string, string>).turtleRole} />
             )}
 
             {task.category && (

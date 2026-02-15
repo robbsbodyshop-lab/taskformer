@@ -4,12 +4,16 @@ import { categorySchema } from '@/lib/validations/category'
 
 export const dynamic = 'force-dynamic'
 
-export async function PUT(request: Request, context: { params: { id: string } }) {
+export async function PUT(
+  request: Request,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
+    const { id } = await context.params
     const body = await request.json()
     const validated = categorySchema.parse(body)
     const category = await db.category.update({
-      where: { id: context.params.id },
+      where: { id },
       data: validated,
     })
     return NextResponse.json({ success: true, category })
@@ -21,10 +25,14 @@ export async function PUT(request: Request, context: { params: { id: string } })
   }
 }
 
-export async function DELETE(_request: Request, context: { params: { id: string } }) {
+export async function DELETE(
+  _request: Request,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
+    const { id } = await context.params
     await db.category.delete({
-      where: { id: context.params.id },
+      where: { id },
     })
     return NextResponse.json({ success: true })
   } catch {

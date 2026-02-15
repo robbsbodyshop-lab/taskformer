@@ -7,6 +7,7 @@ import { HabitCard } from '@/components/habits/habit-card'
 import { HabitForm } from '@/components/habits/habit-form'
 import type { HabitWithCompletions } from '@/lib/queries/habits'
 import type { Category } from '@prisma/client'
+import { useTurtle } from '@/lib/contexts/turtle-context'
 
 export default function HabitsPage() {
   const [habits, setHabits] = useState<HabitWithCompletions[]>([])
@@ -14,6 +15,7 @@ export default function HabitsPage() {
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingHabit, setEditingHabit] = useState<HabitWithCompletions | undefined>()
   const [isLoading, setIsLoading] = useState(true)
+  const { getDialogue } = useTurtle()
 
   const fetchJson = async <T,>(url: string, fallback: T): Promise<T> => {
     try {
@@ -83,7 +85,9 @@ export default function HabitsPage() {
           </div>
         ) : habits.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
-            <p className="text-lg font-medium">No habits found</p>
+            <p className="text-lg font-medium">
+              {getDialogue('emptyHabits') || 'No habits found'}
+            </p>
             <p className="text-sm">Create your first habit to start tracking!</p>
           </div>
         ) : (

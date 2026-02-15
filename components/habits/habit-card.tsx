@@ -15,6 +15,7 @@ import { calculateStreak } from '@/lib/utils/streaks'
 import { getHabitXP } from '@/lib/utils/xp'
 import { isToday } from 'date-fns'
 import { useGame } from '@/lib/contexts/game-context'
+import { useTurtle } from '@/lib/contexts/turtle-context'
 
 interface HabitCardProps {
   habit: HabitWithCompletions
@@ -33,6 +34,7 @@ export function HabitCard({ habit, onEdit }: HabitCardProps) {
   const [isArchiving, setIsArchiving] = useState(false)
   const [showXP, setShowXP] = useState(false)
   const { handleGameReward } = useGame()
+  const { getDialogue } = useTurtle()
 
   const streak = calculateStreak(habit, habit.completions)
   const completedToday = habit.completions.some((c) =>
@@ -48,7 +50,10 @@ export function HabitCard({ habit, onEdit }: HabitCardProps) {
     setIsToggling(false)
 
     if (result.success) {
-      toast.success(result.completed ? 'Habit completed!' : 'Completion removed')
+      const message = result.completed
+        ? getDialogue('habitComplete') || 'Habit completed!'
+        : 'Completion removed'
+      toast.success(message)
 
       // Trigger game rewards if completing
       if (result.completed && result.xp) {

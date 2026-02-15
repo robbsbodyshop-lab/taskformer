@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTurtle } from '@/lib/contexts/turtle-context'
 
 interface LevelUpModalProps {
   level: number
@@ -41,10 +42,14 @@ function Particle({ index }: { index: number }) {
 }
 
 export function LevelUpModal({ level, title, onDismiss }: LevelUpModalProps) {
+  const { getDialogue, stanceProfile } = useTurtle()
+
   useEffect(() => {
     const timer = setTimeout(onDismiss, 4000)
     return () => clearTimeout(timer)
   }, [onDismiss])
+
+  const levelUpMessage = getDialogue('levelUp')
 
   return (
     <AnimatePresence>
@@ -104,6 +109,18 @@ export function LevelUpModal({ level, title, onDismiss }: LevelUpModalProps) {
               {title}
             </motion.p>
           </div>
+
+          {/* Turtle-voiced message */}
+          {levelUpMessage && (
+            <motion.p
+              className="text-xs text-muted-foreground text-center max-w-[200px] italic"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8 }}
+            >
+              {stanceProfile?.bandana} &ldquo;{levelUpMessage}&rdquo;
+            </motion.p>
+          )}
 
           <motion.button
             className="mt-2 text-xs text-muted-foreground hover:text-foreground transition-colors"

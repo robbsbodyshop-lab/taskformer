@@ -18,7 +18,7 @@ export async function POST(request: Request) {
       data: validated,
     })
     return NextResponse.json({ success: true, category })
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { success: false, error: 'Failed to create category' },
       { status: 400 }

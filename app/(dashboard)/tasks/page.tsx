@@ -8,6 +8,7 @@ import { TaskCard } from '@/components/tasks/task-card'
 import { TaskForm } from '@/components/tasks/task-form'
 import { TaskFilters, TaskFilterState } from '@/components/tasks/task-filters'
 import type { TaskWithCategory } from '@/lib/queries/tasks'
+import { useTurtle } from '@/lib/contexts/turtle-context'
 import type { Category } from '@prisma/client'
 
 export default function TasksPage() {
@@ -19,6 +20,7 @@ export default function TasksPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [showFilters, setShowFilters] = useState(false)
   const searchParams = useSearchParams()
+  const { getDialogue } = useTurtle()
 
   const fetchJson = async <T,>(url: string, fallback: T): Promise<T> => {
     try {
@@ -136,7 +138,9 @@ export default function TasksPage() {
             </div>
           ) : tasks.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
-              <p className="text-lg font-medium">No tasks found</p>
+              <p className="text-lg font-medium">
+                {getDialogue('emptyTasks') || 'No tasks found'}
+              </p>
               <p className="text-sm">Create your first task to get started!</p>
             </div>
           ) : (

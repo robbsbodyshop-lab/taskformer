@@ -12,6 +12,15 @@ import { achievementIconMap } from '@/components/game/achievement-icon'
 import Link from 'next/link'
 import type { Achievement } from '@prisma/client'
 
+// TMNT Feature Components
+import { SplinterGuidance } from '@/components/game/splinter-guidance'
+import { AprilBrief } from '@/components/game/april-brief'
+import { CaseyMode } from '@/components/game/casey-mode'
+import { BrotherhoodMeter } from '@/components/game/brotherhood-meter'
+import { StoryArcCard } from '@/components/game/story-arc-card'
+import { WeaponBonusCard } from '@/components/game/weapon-bonus-card'
+import { AllyPanel } from '@/components/game/ally-panel'
+
 type DashboardData = Awaited<ReturnType<typeof getDashboardData>>
 
 type DashboardResponse = {
@@ -191,6 +200,30 @@ export default function DashboardPage() {
         </Card>
       </div>
 
+      {/* Splinter Guidance (#4) */}
+      <SplinterGuidance />
+
+      {/* TMNT Feature Grid */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {/* Casey Chaos Mode (#6) */}
+        <CaseyMode />
+
+        {/* April Intel Brief (#5) */}
+        <AprilBrief />
+
+        {/* Brotherhood Meter (#3) */}
+        <BrotherhoodMeter />
+      </div>
+
+      {/* Story Arc + Weapon Bonuses row */}
+      <div className="grid gap-4 md:grid-cols-2">
+        {/* Story Arc Seasons (#9) */}
+        <StoryArcCard />
+
+        {/* Weapon Bonuses (#7) */}
+        <WeaponBonusCard />
+      </div>
+
       {/* Stats Cards */}
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
         <Link href="/tasks?new=1" className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl">
@@ -269,58 +302,8 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Getting Started Section */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Getting Started</CardTitle>
-          <CardDescription>
-            Set up your task and habit tracking system
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-start gap-4">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              1
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm font-medium leading-none">
-                Create Categories
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Organize your tasks and habits by creating categories like Work, Personal, Health, etc.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-4">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              2
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm font-medium leading-none">
-                Add Your First Task
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Create tasks with priorities, due dates, and reminders to stay on top of your work.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-4">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              3
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm font-medium leading-none">
-                Start a Habit
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Track daily or weekly habits and build streaks to stay motivated.
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Ally Panel (#10) */}
+      <AllyPanel />
     </div>
   )
 }

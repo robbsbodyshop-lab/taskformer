@@ -5,6 +5,7 @@ import { CheckSquare, Calendar, FolderKanban, LayoutDashboard, Trophy } from 'lu
 import { ThemeToggle } from './theme-toggle'
 import { useTheme } from '@/lib/contexts/theme-context'
 import { LevelBadge } from '@/components/game/level-badge'
+import { StanceIndicator } from '@/components/game/stance-indicator'
 
 export function DashboardHeader() {
   const { theme } = useTheme()
@@ -31,6 +32,11 @@ export function DashboardHeader() {
         {/* Level badge - visible on all sizes */}
         <div className="ml-2">
           <LevelBadge />
+        </div>
+
+        {/* Turtle stance indicator */}
+        <div className="ml-1">
+          <StanceIndicator />
         </div>
 
         {/* Desktop Navigation - hidden on mobile (bottom nav takes over) */}
