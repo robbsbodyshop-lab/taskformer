@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Plus } from 'lucide-react'
 import { HabitCard } from '@/components/habits/habit-card'
@@ -25,7 +25,7 @@ export default function HabitsPage() {
     }
   }
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     setIsLoading(true)
     try {
       const [habitsData, categoriesData] = await Promise.all([
@@ -39,11 +39,11 @@ export default function HabitsPage() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
     loadData()
-  }, [])
+  }, [loadData])
 
   const handleCreateHabit = () => {
     setEditingHabit(undefined)
@@ -58,7 +58,7 @@ export default function HabitsPage() {
   const handleFormClose = () => {
     setIsFormOpen(false)
     setEditingHabit(undefined)
-    loadData()
+    void loadData()
   }
 
   return (
