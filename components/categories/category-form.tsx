@@ -1,11 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { createCategory, updateCategory } from '@/app/(dashboard)/categories/actions'
 import { useThemedColors } from '@/lib/hooks/use-themed-colors'
 import type { Category } from '@prisma/client'
 
@@ -20,6 +20,7 @@ export function CategoryForm({ category, onSuccess }: CategoryFormProps) {
   const [name, setName] = useState(category?.name ?? '')
   const [icon, setIcon] = useState(category?.icon ?? '')
   const [color, setColor] = useState(category?.color ?? defaultColors[0])
+  const router = useRouter()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -33,14 +34,20 @@ export function CategoryForm({ category, onSuccess }: CategoryFormProps) {
         order: category?.order ?? 0,
       }
 
-      const result = category
-        ? await updateCategory(category.id, data)
-        : await createCategory(data)
+      const url = category ? `/api/categories/${category.id}` : '/api/categories'
+      const method = category ? 'PUT' : 'POST'
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+      const result = await response.json()
 
       if (result.success) {
         toast.success(
           category ? 'Category updated successfully' : 'Category created successfully'
         )
+        router.refresh()
         onSuccess?.()
       } else {
         toast.error(result.error)

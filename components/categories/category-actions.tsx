@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { CategoryForm } from './category-form'
-import { deleteCategory } from '@/app/(dashboard)/categories/actions'
+import { useRouter } from 'next/navigation'
 import type { Category } from '@prisma/client'
 
 interface CategoryActionsProps {
@@ -29,14 +29,19 @@ export function CategoryActions({ category }: CategoryActionsProps) {
   const [editOpen, setEditOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const router = useRouter()
 
   async function handleDelete() {
     setLoading(true)
     try {
-      const result = await deleteCategory(category.id)
-      if (result.success) {
+      const response = await fetch(`/api/categories/${category.id}`, {
+        method: 'DELETE',
+      })
+      const result = await response.json()
+      if (response.ok && result.success) {
         toast.success('Category deleted successfully')
         setDeleteOpen(false)
+        router.refresh()
       } else {
         toast.error(result.error)
       }
